@@ -1,0 +1,55 @@
+services:
+  netdata-parent:
+    build: .
+    container_name: netdata-parent1
+    hostname: "${NETDATA_HOSTNAME}"
+#    hostname: eobpc11037
+
+    ports:
+      - "20000:19999"
+
+    pid: host
+
+    volumes:
+#      - parent-config:/etc/netdata
+      - parent-lib:/var/lib/netdata
+      - parent-cache:/var/cache/netdata
+
+      - /:/host/root:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/log:/host/var/log:ro
+
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/localtime:/host/etc/localtime:ro
+
+      # Docker monitoring
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+      # D-Bus
+      - /run/dbus:/run/dbus:ro
+
+      # Child's stream configuration
+#      - ./child/stream.conf:/etc/netdata/stream.conf:ro
+
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+
+    security_opt:
+      - apparmor=unconfined
+
+    networks:
+      - netdata
+
+    restart: unless-stopped
+
+networks:
+  netdata:
+
+volumes:
+#  parent-config:
+  parent-lib:
+  parent-cache:
