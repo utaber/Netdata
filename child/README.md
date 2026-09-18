@@ -1,4 +1,4 @@
-#installation
+# installation
 
 before starting the image, make sure to run
 ```sh
